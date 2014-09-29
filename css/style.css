@@ -1,0 +1,137 @@
+body
+{
+    height: 100%;
+    width: 100%;
+    margin: auto;
+	background-image: url('../img/bg.png')
+}
+#whole
+{
+	margin: auto;
+	width: 930px;
+	display: block;
+	height: 100%;
+	background-image: url('../img/cards_bg_l.png'), url('../img/cards_bg_p.png');
+	background-position: left, right;
+	background-repeat: repeat-y, repeat-y;
+	border-bottom: 3px solid #DB561D;
+}
+section #main
+{
+	display: block;
+	margin: auto;
+	height: 100%;
+	width: 772px;
+	background: white;
+	border-left: solid #db561d 3px;
+	border-right: solid #db561d 3px;
+}
+header
+{
+	text-align: center
+}
+nav a, nav a:link, nav a:visited, nav a:active
+{
+	color: black;
+	text-decoration: none;
+}
+h1, h2, h3
+{
+    font-family: Sylfaen, Ubuntu, 'IM Fell DW Pica SC', serif;
+    text-align: center;
+}
+h1
+{
+	font-size: 36px;
+}
+h2
+{
+	font-size: 20px;
+}
+h3
+{
+	font-size: 15px;
+}
+@font-face
+{
+	font-family: Stencil;
+	src: url('../font/STENCIL.TTF');
+	font-weight: 100;
+}
+nav.frame
+{
+	display: table;
+	width: 100%;
+}
+nav ul
+{
+	display: table-cell;
+	text-align: center;
+}
+nav li
+{
+	display: inline-block;
+	padding: 5px 10px;
+	background-color: #e99774; 
+	border: solid #e99774 3px;
+	border-bottom: none;
+	border-top-left-radius: 10px;
+	border-top-right-radius: 10px;
+}
+nav li:not(#this):hover
+{
+	background-image: -moz-linear-gradient(bottom,  rgba(233, 151, 116, 1) 50%,rgba(255, 255, 255, 0.5) 100%);
+	background-image: -webkit-gradient(linear, left bottom, left top, color-stop(50%,rgba(233, 151, 116, 1)), color-stop(100%,rgba(255, 255, 255, 1)));
+	background-image: -webkit-linear-gradient(bottom,  rgba(233, 151, 116, 1) 50%,rgba(255, 255, 255, 0.5) 100%);
+	background-image: -o-linear-gradient(bottom,  rgba(233, 151, 116, 1) 50%,rgba(255, 255, 255, 0.5) 100%);
+	background-image: -ms-linear-gradient(bottom,  rgba(233, 151, 116, 1) 50%,rgba(255, 255, 255, 0.5) 100%);
+	background-image: linear-gradient(to top,  rgba(233, 151, 116, 1) 50%,rgba(255, 255, 255, 0.5) 100%);
+}
+#this
+{
+	background-color: #db561d;
+	border: solid #db561d 3px;
+	border-bottom: none;
+	font-weight: bold;
+	color: white;
+}
+section #frame
+{
+	height: 75%;
+	background-color: rgb(255,255,255);
+	padding: 20px;
+	padding-bottom: 0;
+
+	background-image: -moz-linear-gradient(top,  rgba(219, 86, 29, 1) 0%, rgba(255, 255, 255, 1) 30px);
+	background-image: -webkit-gradient(linear, left top, left bottom, color-stop(0%,rgba(219, 86, 29, 1)), color-stop(30px,rgba(255, 255, 255, 1)));
+	background-image: -webkit-linear-gradient(top,  rgba(219, 86, 29, 1) 0%,rgba(255, 255, 255, 1) 30px);
+	background-image: -o-linear-gradient(top,  rgba(219, 86, 29, 1) 0%,rgba(255, 255, 255, 1) 30px);
+	background-image: -ms-linear-gradient(top,  rgba(219, 86, 29, 1) 0%,rgba(255, 255, 255, 1) 30px);
+	background-image: linear-gradient(to bottom,  rgba(219, 86, 29, 1) 0%,rgba(255, 255, 255, 1) 30px);
+}
+footer
+{
+    text-align: center;
+    clear: both;
+    padding-bottom: 10px;
+    padding-top: 20px;
+}
+canvas
+{
+	border: 1px solid black;
+	display: block;
+	margin: auto;
+}
+table
+{
+	border-collapse: collapse;
+}
+table, th, td
+{
+	border: 1px solid black;
+}
+th, td
+{
+	text-align: center;
+	padding: 2px;
+}

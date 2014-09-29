@@ -1,0 +1,236 @@
+<!DOCTYPE html>
+
+<html>
+<head>
+  <title>hanafuda.coffee</title>
+  <meta http-equiv="content-type" content="text/html; charset=UTF-8">
+  <link rel="stylesheet" media="all" href="public/stylesheets/normalize.css" />
+  <link rel="stylesheet" media="all" href="docco.css" />
+</head>
+<body>
+  <div class="container">
+    <div class="page">
+
+      <div class="header">
+        
+          <h1>hanafuda.coffee</h1>
+        
+
+        
+      </div>
+
+      
+        
+        
+        
+          <div class='highlight'><pre><span class="string">'use strict'</span></pre></div>
+        
+      
+        
+        <h1>#</h1>
+<p>Klasa bazowa przetrzymująca canvas i canvasContext potrzebne później w funkcjach typu draw czy stroke</p>
+<h1>#</h1>
+
+        
+          <div class='highlight'><pre><span class="class"><span class="keyword">class</span> <span class="title">CanvasHolder</span></span></pre></div>
+        
+      
+        
+        <p>#
+Konstruktor z jednym parametrem
+@param canvas - obiekt canvas
+#</p>
+
+        
+          <div class='highlight'><pre>	constructor: (<span class="property">@canvas</span>) -&gt;
+		<span class="property">@ctx</span> = <span class="property">@canvas</span>.getContext(<span class="string">'2d'</span>)</pre></div>
+        
+      
+        
+        <p>#
+Klasa bazowa dla obiektów które posiadająca swoje wymiary, pozycję i można je namierzyć
+#</p>
+
+        
+          <div class='highlight'><pre><span class="class"><span class="keyword">class</span> <span class="title">ActiveObject</span> <span class="keyword">extends</span> <span class="title">CanvasHolder</span></span></pre></div>
+        
+      
+        
+        <h2>*</h2>
+
+        
+          <div class='highlight'><pre>	* Konstruktor podstawowy
+	* <span class="property">@param</span> canvas obiekt canvas
+	* <span class="property">@param</span> x współrzędna x
+	* <span class="property">@param</span> y współrzędna y
+	* <span class="property">@param</span> width długość obiektu
+	* <span class="property">@param</span> wysokość obiektu
+	*<span class="comment">###
+	constructor: (canvas, @x, @y, @width, @height) -&gt;
+		super(canvas)
+		@hover = false
+		@strokeStyle = 'green'</pre></div>
+        
+      
+        
+        <p>#
+Funkcja sprawdzająca czy mysz jest w obrębie obiektu
+@param mx współrzędna x myszy
+@param my współrzędna y myszy
+@</p>
+
+        
+          <div class='highlight'><pre>	isHover: (mx, my) -&gt;
+		<span class="keyword">if</span> mx &gt; <span class="property">@x</span> <span class="keyword">and</span> mx &lt; <span class="property">@x</span> + <span class="property">@width</span> <span class="keyword">and</span> my &gt; <span class="property">@y</span> <span class="keyword">and</span> my &lt; <span class="property">@y</span> + <span class="property">@height</span>
+			<span class="property">@hover</span> = <span class="literal">true</span>
+		<span class="keyword">else</span>
+			<span class="property">@hover</span> = <span class="literal">false</span></pre></div>
+        
+      
+        
+        <p>#
+Funkcja rysująca kontur o wymiarach obiektu
+Kolor konturu można zdefiniować poprzez zmienną strokeStyle
+#</p>
+
+        
+          <div class='highlight'><pre>	stroke: -&gt;
+		<span class="property">@ctx</span>.strokeStyle = <span class="property">@strokeStyle</span>
+		<span class="property">@ctx</span>.strokeRect(<span class="property">@x</span>, <span class="property">@y</span>, <span class="property">@width</span>, <span class="property">@height</span>)
+
+<span class="class"><span class="keyword">class</span> <span class="title">HoverText</span> <span class="keyword">extends</span> <span class="title">ActiveObject</span></span>
+	constructor: (canvas, <span class="property">@text</span>, <span class="property">@style</span>, x, y, width, height) -&gt;
+		<span class="keyword">super</span>(canvas, x, y, width, height)
+		<span class="property">@strokeStyle</span> = <span class="string">'blue'</span>
+	draw: -&gt;
+		<span class="keyword">if</span> <span class="property">@hover</span>
+			<span class="property">@stroke</span>()
+		Text.fillText(<span class="property">@style</span>, <span class="property">@text</span>, <span class="property">@x</span>, <span class="property">@y</span>)
+
+<span class="class"><span class="keyword">class</span> <span class="title">Board</span> <span class="keyword">extends</span> <span class="title">CanvasHolder</span></span>
+	constructor: (canvas, cardlist) -&gt;
+		<span class="keyword">super</span>(canvas)
+		<span class="property">@background</span> = <span class="property">@ctx</span>.createRadialGradient(<span class="number">350</span>, <span class="number">223</span>, <span class="number">0</span>, <span class="number">350</span>, <span class="number">223</span>, <span class="number">700</span>)
+		<span class="property">@background</span>.addColorStop(<span class="number">0</span>, <span class="string">'#fff'</span>)
+		<span class="property">@background</span>.addColorStop(<span class="number">1</span>, <span class="string">'#000'</span>)
+		<span class="property">@deck</span> = <span class="keyword">new</span> Deck(canvas, cardlist)
+		<span class="property">@lock</span> = <span class="literal">false</span>
+		<span class="property">@gamestate</span> = <span class="number">1</span>
+		<span class="property">@menu</span> = <span class="keyword">new</span> Menu(canvas)
+	draw: -&gt;
+		<span class="property">@ctx</span>.clearRect(<span class="number">0</span>, <span class="number">0</span>, <span class="property">@canvas</span>.width, <span class="property">@canvas</span>.height)
+		<span class="property">@ctx</span>.fillStyle = <span class="property">@background</span>
+		<span class="property">@ctx</span>.fillRect(<span class="number">0</span>, <span class="number">0</span>, <span class="number">700</span>, <span class="number">700</span>)
+		<span class="keyword">switch</span> <span class="property">@gamestate</span>
+			<span class="keyword">when</span> <span class="number">1</span> <span class="keyword">then</span> <span class="property">@menu</span>.draw()
+	mouseClick: (event) -&gt;
+		mx = event.pageX
+		my = event.pageY
+		<span class="keyword">if</span> <span class="keyword">not</span> <span class="property">@lock</span>
+			<span class="keyword">switch</span> <span class="property">@gamestate</span>
+				<span class="keyword">when</span> <span class="number">1</span> <span class="keyword">then</span> <span class="keyword">if</span> <span class="property">@menu</span>.hover
+					<span class="property">@startGame</span>()
+	mouseMove: (event) =&gt;
+		mx = event.pageX - <span class="property">@canvas</span>.offsetLeft
+		my = event.pageY - <span class="property">@canvas</span>.offsetTop
+		<span class="keyword">if</span> <span class="keyword">not</span> <span class="property">@lock</span>
+			<span class="keyword">switch</span> <span class="property">@gamestate</span>
+				<span class="keyword">when</span> <span class="number">1</span>
+					<span class="property">@menu</span>.isHover(mx, my)
+	logic: =&gt;
+		<span class="property">@draw</span>()
+	startGame: -&gt;
+		<span class="property">@player</span> = <span class="keyword">new</span> Player()
+		<span class="property">@opponent</span> = <span class="keyword">new</span> Opponent()
+	init: -&gt;
+		self = @
+		<span class="property">@flow</span> = setInterval(self.logic, <span class="number">100</span>)
+
+<span class="class"><span class="keyword">class</span> <span class="title">Deck</span> <span class="keyword">extends</span> <span class="title">CanvasHolder</span></span>
+	constructor: (canvas, cardlist) -&gt;
+		<span class="keyword">super</span>(canvas)
+		<span class="property">@cards</span> = []
+		<span class="keyword">for</span> card <span class="keyword">in</span> cardlist
+			<span class="property">@cards</span>.push(<span class="keyword">new</span> Card(canvas, card.month, card.type, card.x, card.y))
+		_.shuffle(<span class="property">@cards</span>)
+		
+<span class="class"><span class="keyword">class</span> <span class="title">Card</span> <span class="keyword">extends</span> <span class="title">CanvasHolder</span></span>
+	constructor: (canvas, <span class="property">@month</span>, <span class="property">@type</span>, <span class="property">@imgx</span>, <span class="property">@imgy</span>) -&gt;
+		<span class="keyword">super</span>(canvas)
+		<span class="property">@busy</span> = <span class="literal">false</span>
+		<span class="property">@x</span> = <span class="number">20</span>
+		<span class="property">@y</span> = <span class="number">177</span>
+		<span class="property">@width</span> = <span class="number">56</span>
+		<span class="property">@height</span> = <span class="number">90</span>
+		<span class="property">@vis</span> = <span class="literal">true</span>
+	draw: -&gt;
+		<span class="keyword">if</span> <span class="property">@vis</span>
+			<span class="property">@ctx</span>.drawImage(Card.cardimg, <span class="property">@imgx</span>, <span class="property">@imgy</span>, <span class="property">@width</span>, <span class="property">@height</span>, <span class="property">@x</span>, <span class="property">@y</span>, <span class="property">@width</span>, <span class="property">@height</span>)
+		<span class="keyword">else</span>
+			<span class="property">@ctx</span>.drawImage(Card.backimg, <span class="property">@x</span>, <span class="property">@y</span>, <span class="property">@width</span>, <span class="property">@height</span>)
+
+<span class="class"><span class="keyword">class</span> <span class="title">Menu</span> <span class="keyword">extends</span> <span class="title">CanvasHolder</span></span>
+	constructor: (canvas) -&gt;
+		<span class="keyword">super</span>(canvas)
+		<span class="property">@startText</span> = <span class="keyword">new</span> HoverText(canvas, <span class="string">'Start'</span>, Text.pica, <span class="number">300</span>, <span class="number">250</span>, <span class="number">100</span>, <span class="number">40</span>)
+	draw: -&gt;
+		Text.fillText(Text.title, <span class="string">'Hanafuda'</span>, <span class="property">@canvas</span>.width / <span class="number">2</span>, <span class="number">140</span>)
+		<span class="property">@startText</span>.draw()
+	isHover: (mx, my) -&gt;
+		<span class="property">@startText</span>.isHover(mx, my)
+
+<span class="class"><span class="keyword">class</span> <span class="title">Text</span></span>
+	<span class="property">@setCanvas</span>: (canvas) -&gt;
+		<span class="property">@ctx</span> = canvas.getContext(<span class="string">'2d'</span>)
+	<span class="property">@title</span>: =&gt;
+		<span class="property">@ctx</span>.fillStyle = <span class="string">'black'</span>
+		<span class="property">@ctx</span>.textAlign = <span class="string">'center'</span>
+		<span class="property">@ctx</span>.textBaseline = <span class="string">'top'</span>
+		<span class="property">@ctx</span>.font = <span class="string">'67pt Stencil'</span>
+	<span class="property">@pica</span>: =&gt;
+		<span class="property">@ctx</span>.fillStyle = <span class="string">'black'</span>
+		<span class="property">@ctx</span>.textAlign = <span class="string">'left'</span>
+		<span class="property">@ctx</span>.textBaseline = <span class="string">'top'</span>
+		<span class="property">@ctx</span>.font = <span class="string">'30pt IM Fell DW Pica SC'</span>
+	<span class="property">@set</span>: =&gt;
+		<span class="property">@ctx</span>.fillStyle = <span class="string">'black'</span>
+		<span class="property">@ctx</span>.textAlign = <span class="string">'left'</span>
+		<span class="property">@ctx</span>.font = <span class="string">'10pt IM Fell DW Pica SC'</span>
+		<span class="property">@ctx</span>.textBaseline = <span class="string">'top'</span>
+	<span class="property">@score</span>: =&gt;
+		<span class="property">@ctx</span>.fillStyle = <span class="string">'black'</span>
+		<span class="property">@ctx</span>.textAlign = <span class="string">'left'</span>
+		<span class="property">@ctx</span>.font = <span class="string">'18pt IM Fell DW Pica SC'</span>
+		<span class="property">@ctx</span>.textBaseline = <span class="string">'top'</span>
+	<span class="property">@fillText</span>: (fun, str, x, y) -&gt;
+		fun()
+		<span class="property">@ctx</span>.fillText(str, x, y)
+	<span class="property">@strokeText</span>: (fun, str, x, y) -&gt;
+		fun()
+		<span class="property">@ctx</span>.strokeText(str, x, y)
+
+define(<span class="string">'hanafuda'</span>, [<span class="string">'underscore'</span>, <span class="string">'text!cards.json'</span>], (_, cards) -&gt;
+	<span class="function"><span class="title">init</span></span> = -&gt;
+		canvas = $(<span class="string">'canvas'</span>)[<span class="number">0</span>]
+		cardlist = JSON.parse(cards)
+		Text.setCanvas(canvas)
+		Card.frontimg = <span class="keyword">new</span> Image()
+		Card.frontimg.src = <span class="string">'img/cards.png'</span>
+		Card.backimg = <span class="keyword">new</span> Image()
+		Card.backimg.src = <span class="string">'img/back.png'</span>
+
+		board = <span class="keyword">new</span> Board(canvas, cardlist)
+		$(<span class="string">'canvas'</span>).bind(
+			click: board.mouseClick
+			mousemove: board.mouseMove
+		)
+		board.init()
+	{init: init}
+)</pre></div>
+        
+      
+      <div class="fleur">h</div>
+    </div>
+  </div>
+</body>
+</html>

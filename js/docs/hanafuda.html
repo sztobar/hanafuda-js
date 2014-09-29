@@ -1,0 +1,674 @@
+<!DOCTYPE html>
+
+<html>
+<head>
+  <title>hanafuda.coffee</title>
+  <meta http-equiv="content-type" content="text/html; charset=UTF-8">
+  <meta name="viewport" content="width=device-width, target-densitydpi=160dpi, initial-scale=1.0; maximum-scale=1.0; user-scalable=0;">
+  <link rel="stylesheet" media="all" href="docco.css" />
+</head>
+<body>
+  <div id="container">
+    <div id="background"></div>
+    
+    <ul class="sections">
+        
+          <li id="title">
+              <div class="annotation">
+                  <h1>hanafuda.coffee</h1>
+              </div>
+          </li>
+        
+        
+        
+        <li id="section-1">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-1">&#182;</a>
+              </div>
+              
+            </div>
+            
+            <div class="content"><div class='highlight'><pre><span class="string">'use strict'</span></pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-2">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-2">&#182;</a>
+              </div>
+              <p>Klasa bazowa przetrzymująca canvas i canvasContext potrzebne później w funkcjach typu draw czy stroke</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre><span class="class"><span class="keyword">class</span> <span class="title">CanvasHolder</span></span></pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-3">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-3">&#182;</a>
+              </div>
+              <p>Konstruktor w którym trzeba podać obiekty <code>canvas</code></p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>	constructor: (<span class="property">@canvas</span>) -&gt;
+		<span class="property">@ctx</span> = <span class="property">@canvas</span>.getContext(<span class="string">'2d'</span>)</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-4">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-4">&#182;</a>
+              </div>
+              <p>Klasa bazowa dla obiektów które posiadająca swoje wymiary, pozycję i można je namierzyć</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre><span class="class"><span class="keyword">class</span> <span class="title">ActiveObject</span> <span class="keyword">extends</span> <span class="title">CanvasHolder</span></span></pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-5">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-5">&#182;</a>
+              </div>
+              <p>Konstruktor podstawowy z parametrami:</p>
+<p>Obiekt <code>canvas</code>, współrzędna <code>x</code>, współrzędna <code>y</code>,
+długość obiektu <code>width</code>, wysokość obiektu <code>height</code></p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>	constructor: (canvas, <span class="property">@x</span>, <span class="property">@y</span>, <span class="property">@width</span>, <span class="property">@height</span>) -&gt;
+		<span class="keyword">super</span>(canvas)
+		<span class="property">@hover</span> = <span class="literal">false</span>
+		<span class="property">@strokeStyle</span> = <span class="string">'green'</span></pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-6">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-6">&#182;</a>
+              </div>
+              <p>Funkcja sprawdzająca czy mysz jest w obrębie obiektu</p>
+<p><code>mx</code>, <code>my</code> to współrzędne myszy</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>	isHover: (mx, my) -&gt;
+		<span class="keyword">if</span> mx &gt; <span class="property">@x</span> <span class="keyword">and</span> mx &lt; <span class="property">@x</span> + <span class="property">@width</span> <span class="keyword">and</span> my &gt; <span class="property">@y</span> <span class="keyword">and</span> my &lt; <span class="property">@y</span> + <span class="property">@height</span>
+			<span class="property">@hover</span> = <span class="literal">true</span>
+		<span class="keyword">else</span>
+			<span class="property">@hover</span> = <span class="literal">false</span></pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-7">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-7">&#182;</a>
+              </div>
+              <p>Funkcja rysująca kontur o wymiarach obiektu.
+Kolor konturu można zdefiniować poprzez zmienną <code>strokeStyle</code></p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>	stroke: -&gt;
+		<span class="property">@ctx</span>.strokeStyle = <span class="property">@strokeStyle</span>
+		<span class="property">@ctx</span>.strokeRect(<span class="property">@x</span>, <span class="property">@y</span>, <span class="property">@width</span>, <span class="property">@height</span>)</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-8">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-8">&#182;</a>
+              </div>
+              <p>Klasa wyświetlająca tekst mający cechy obiektu <code>ActiveObject</code></p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre><span class="class"><span class="keyword">class</span> <span class="title">ActiveText</span> <span class="keyword">extends</span> <span class="title">ActiveObject</span></span></pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-9">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-9">&#182;</a>
+              </div>
+              <p>W konstruktorze poza zmiennymi, które zwyczajnie podaje się do <code>ActiveObject</code>,
+podajemy jeszcze treść do wyświetlenia <code>text</code> i styl <code>style</code> wzięty z obiektu <code>Text</code></p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>	constructor: (canvas, <span class="property">@text</span>, <span class="property">@style</span>, x, y, width, height) -&gt;
+		<span class="keyword">super</span>(canvas, x, y, width, height)
+		<span class="property">@strokeStyle</span> = <span class="string">'blue'</span></pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-10">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-10">&#182;</a>
+              </div>
+              <p>Funkcja rysująca tekst. Jeśli Najechaliśmy na tekst, wyświetlony jest również jego kontur(w formie prostokątu).</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>	draw: -&gt;
+		<span class="keyword">if</span> <span class="property">@hover</span>
+			<span class="property">@stroke</span>()
+		Text.fillText(<span class="property">@style</span>, <span class="property">@text</span>, <span class="property">@x</span>, <span class="property">@y</span>)</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-11">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-11">&#182;</a>
+              </div>
+              <p>Klasa ‘matka’ która rozporządza wszystkim co dzieje się w grze</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre><span class="class"><span class="keyword">class</span> <span class="title">Board</span> <span class="keyword">extends</span> <span class="title">CanvasHolder</span></span></pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-12">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-12">&#182;</a>
+              </div>
+              <p>W kontrusktorze przekazujemy tylko obiekt <code>canvas</code> i obiekt <code>cardlist</code> czyli współrzędne
+kart na obrazku razem z ich wartościami. Cardlist pobieramy jako obiekt <code>.json</code></p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>	constructor: (canvas, cardlist) -&gt;
+		<span class="keyword">super</span>(canvas)
+		<span class="property">@background</span> = <span class="property">@ctx</span>.createRadialGradient(<span class="number">350</span>, <span class="number">223</span>, <span class="number">0</span>, <span class="number">350</span>, <span class="number">223</span>, <span class="number">700</span>)
+		<span class="property">@background</span>.addColorStop(<span class="number">0</span>, <span class="string">'#fff'</span>)
+		<span class="property">@background</span>.addColorStop(<span class="number">1</span>, <span class="string">'#000'</span>)
+		<span class="property">@deck</span> = <span class="keyword">new</span> Deck(canvas, cardlist)
+		<span class="property">@lock</span> = <span class="literal">false</span>
+		<span class="property">@gamestate</span> = <span class="number">1</span>
+		<span class="property">@menu</span> = <span class="keyword">new</span> Menu(canvas)</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-13">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-13">&#182;</a>
+              </div>
+              <p>Funkcja rysująca różne komponenty zależnie od zmiennej <code>gamestate</code></p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>	draw: -&gt;
+		<span class="property">@ctx</span>.clearRect(<span class="number">0</span>, <span class="number">0</span>, <span class="property">@canvas</span>.width, <span class="property">@canvas</span>.height)
+		<span class="property">@ctx</span>.fillStyle = <span class="property">@background</span>
+		<span class="property">@ctx</span>.fillRect(<span class="number">0</span>, <span class="number">0</span>, <span class="number">700</span>, <span class="number">700</span>)
+		<span class="keyword">switch</span> <span class="property">@gamestate</span>
+			<span class="keyword">when</span> <span class="number">1</span> <span class="keyword">then</span> <span class="property">@menu</span>.draw()</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-14">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-14">&#182;</a>
+              </div>
+              <p>Funkcja obsługująca kliknięcie myszką w grze</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>	mouseClick: (event) -&gt;
+		mx = event.pageX
+		my = event.pageY
+		<span class="keyword">if</span> <span class="keyword">not</span> <span class="property">@lock</span>
+			<span class="keyword">switch</span> <span class="property">@gamestate</span>
+				<span class="keyword">when</span> <span class="number">1</span> <span class="keyword">then</span> <span class="keyword">if</span> <span class="property">@menu</span>.hover
+					<span class="property">@startGame</span>()</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-15">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-15">&#182;</a>
+              </div>
+              <p>Funkcja obsługująca poruszanie się myszką po planszy</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>	mouseMove: (event) =&gt;
+		mx = event.pageX - <span class="property">@canvas</span>.offsetLeft
+		my = event.pageY - <span class="property">@canvas</span>.offsetTop
+		<span class="keyword">if</span> <span class="keyword">not</span> <span class="property">@lock</span>
+			<span class="keyword">switch</span> <span class="property">@gamestate</span>
+				<span class="keyword">when</span> <span class="number">1</span>
+					<span class="property">@menu</span>.isHover(mx, my)</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-16">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-16">&#182;</a>
+              </div>
+              <p>‘Logika’ gry czyli akcje do wykonania po ktorych następuje wywołanie funkcji rysowania</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>	logic: =&gt;
+		<span class="property">@draw</span>()</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-17">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-17">&#182;</a>
+              </div>
+              <p>Rozpoczęcie gry</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>	startGame: -&gt;
+		<span class="property">@player</span> = <span class="keyword">new</span> Player()
+		<span class="property">@opponent</span> = <span class="keyword">new</span> Opponent()</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-18">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-18">&#182;</a>
+              </div>
+              <p>Włączenie działania silnika gry</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>	init: -&gt;
+		self = @
+		<span class="property">@flow</span> = setInterval(self.logic, <span class="number">100</span>)</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-19">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-19">&#182;</a>
+              </div>
+              <p>Klasa przechowująca karty w Talii</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre><span class="class"><span class="keyword">class</span> <span class="title">Deck</span> <span class="keyword">extends</span> <span class="title">CanvasHolder</span></span></pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-20">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-20">&#182;</a>
+              </div>
+              <p>W kontrusktorze podajemy <code>canvas</code> i listę współrzędnych dla kart <code>cardlist</code></p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>	constructor: (canvas, cardlist) -&gt;
+		<span class="keyword">super</span>(canvas)
+		<span class="property">@cards</span> = []
+		<span class="keyword">for</span> card <span class="keyword">in</span> cardlist
+			<span class="property">@cards</span>.push(<span class="keyword">new</span> Card(canvas, card.month, card.type, card.x, card.y))
+		_.shuffle(<span class="property">@cards</span>)</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-21">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-21">&#182;</a>
+              </div>
+              <p>Klasa Karty</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre><span class="class"><span class="keyword">class</span> <span class="title">Card</span> <span class="keyword">extends</span> <span class="title">ActiveObject</span></span></pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-22">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-22">&#182;</a>
+              </div>
+              <p>W konstruktorze przekazujemy miesiąc karty <code>month</code>, jej typ <code>type</code> (normalna, talizman, zwierzę, specjalna) oraz
+współrzędne na obrazku czyli <code>imgx</code>, <code>imgy</code>. Parametry obiektu aktywnego są ustalane na sztywno gdyż wszystkie karty
+mają te same wymiary a pozycja początkowa jest w talii kart.</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>	constructor: (canvas, <span class="property">@month</span>, <span class="property">@type</span>, <span class="property">@imgx</span>, <span class="property">@imgy</span>) -&gt;
+		<span class="keyword">super</span>(canvas, <span class="number">20</span>, <span class="number">177</span>, <span class="number">56</span>, <span class="number">90</span>)
+		<span class="property">@busy</span> = <span class="literal">false</span>
+		<span class="property">@vis</span> = <span class="literal">true</span></pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-23">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-23">&#182;</a>
+              </div>
+              <p>Funkcja rysująca. W przypadku kiedy zmienna <code>vis</code> jest wyłączona, rysowany jest tył karty.</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>	draw: -&gt;
+		<span class="keyword">if</span> <span class="property">@vis</span>
+			<span class="property">@ctx</span>.drawImage(Card.cardimg, <span class="property">@imgx</span>, <span class="property">@imgy</span>, <span class="property">@width</span>, <span class="property">@height</span>, <span class="property">@x</span>, <span class="property">@y</span>, <span class="property">@width</span>, <span class="property">@height</span>)
+		<span class="keyword">else</span>
+			<span class="property">@ctx</span>.drawImage(Card.backimg, <span class="property">@x</span>, <span class="property">@y</span>, <span class="property">@width</span>, <span class="property">@height</span>)</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-24">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-24">&#182;</a>
+              </div>
+              <p>Klasa odpowiadająca za menu początkowe gry</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre><span class="class"><span class="keyword">class</span> <span class="title">Menu</span> <span class="keyword">extends</span> <span class="title">CanvasHolder</span></span></pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-25">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-25">&#182;</a>
+              </div>
+              <p>Konstruktorze przekazujemy tylko obiekt <code>canvas</code></p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>	constructor: (canvas) -&gt;
+		<span class="keyword">super</span>(canvas)
+		<span class="property">@startText</span> = <span class="keyword">new</span> HoverText(canvas, <span class="string">'Start'</span>, Text.pica, <span class="number">300</span>, <span class="number">250</span>, <span class="number">100</span>, <span class="number">40</span>)</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-26">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-26">&#182;</a>
+              </div>
+              <p>Funkcja rysująca</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>	draw: -&gt;
+		Text.fillText(Text.title, <span class="string">'Hanafuda'</span>, <span class="property">@canvas</span>.width / <span class="number">2</span>, <span class="number">140</span>)
+		<span class="property">@startText</span>.draw()</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-27">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-27">&#182;</a>
+              </div>
+              <p>Sprawdzenie czy nie najechaliśmy na napis do kliknięcia</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>	isHover: (mx, my) -&gt;
+		<span class="property">@startText</span>.isHover(mx, my)</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-28">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-28">&#182;</a>
+              </div>
+              <p>Klasa Text zawierająca statyczne metody ktore ustawiają określony styl tekstu</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre><span class="class"><span class="keyword">class</span> <span class="title">Text</span></span></pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-29">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-29">&#182;</a>
+              </div>
+              <p>Przed wywołanie. funkcji <code>fillText</code> i <code>strokeText</code> należy raz wywołać funkcję <code>setCanvas</code></p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>	<span class="property">@setCanvas</span>: (canvas) -&gt;
+		<span class="property">@ctx</span> = canvas.getContext(<span class="string">'2d'</span>)</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-30">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-30">&#182;</a>
+              </div>
+              <p>Styl tytułu</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>	<span class="property">@title</span>: =&gt;
+		<span class="property">@ctx</span>.fillStyle = <span class="string">'black'</span>
+		<span class="property">@ctx</span>.textAlign = <span class="string">'center'</span>
+		<span class="property">@ctx</span>.textBaseline = <span class="string">'top'</span>
+		<span class="property">@ctx</span>.font = <span class="string">'67pt Stencil'</span></pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-31">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-31">&#182;</a>
+              </div>
+              <p>Styl wykorzystujący czcionkę pica</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>	<span class="property">@pica</span>: =&gt;
+		<span class="property">@ctx</span>.fillStyle = <span class="string">'black'</span>
+		<span class="property">@ctx</span>.textAlign = <span class="string">'left'</span>
+		<span class="property">@ctx</span>.textBaseline = <span class="string">'top'</span>
+		<span class="property">@ctx</span>.font = <span class="string">'30pt IM Fell DW Pica SC'</span></pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-32">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-32">&#182;</a>
+              </div>
+              <p>Styl używany do wyświetlania liczb danych kombinacji</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>	<span class="property">@set</span>: =&gt;
+		<span class="property">@ctx</span>.fillStyle = <span class="string">'black'</span>
+		<span class="property">@ctx</span>.textAlign = <span class="string">'left'</span>
+		<span class="property">@ctx</span>.font = <span class="string">'10pt IM Fell DW Pica SC'</span>
+		<span class="property">@ctx</span>.textBaseline = <span class="string">'top'</span></pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-33">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-33">&#182;</a>
+              </div>
+              <p>Styl używany do</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>	<span class="property">@score</span>: =&gt;
+		<span class="property">@ctx</span>.fillStyle = <span class="string">'black'</span>
+		<span class="property">@ctx</span>.textAlign = <span class="string">'left'</span>
+		<span class="property">@ctx</span>.font = <span class="string">'18pt IM Fell DW Pica SC'</span>
+		<span class="property">@ctx</span>.textBaseline = <span class="string">'top'</span></pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-34">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-34">&#182;</a>
+              </div>
+              <p>Rysuje tekst z określonym w <code>fun</code> stylem. <code>str</code> to treść a <code>x</code>, <code>y</code> współrzędne</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>	<span class="property">@fillText</span>: (fun, str, x, y) -&gt;
+		fun()
+		<span class="property">@ctx</span>.fillText(str, x, y)</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-35">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-35">&#182;</a>
+              </div>
+              <p>Wyświetla kontur tekstu. Parametry identyczne jak w funkcji <code>fillText</code></p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>	<span class="property">@strokeText</span>: (fun, str, x, y) -&gt;
+		fun()
+		<span class="property">@ctx</span>.strokeText(str, x, y)</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-36">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-36">&#182;</a>
+              </div>
+              <p>Funkcja do framework&#39;a <code>Require.js</code>. Deklaruje potrzebne komponenty do działania czyli
+bilbiotekę <code>underscore</code> oraz dane odnośnie kart w talii czyli <code>card.json</code></p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>define(<span class="string">'hanafuda'</span>, [<span class="string">'underscore'</span>, <span class="string">'text!cards.json'</span>], (_, cards) -&gt;
+	<span class="function"><span class="title">init</span></span> = -&gt;
+		canvas = $(<span class="string">'canvas'</span>)[<span class="number">0</span>]
+		cardlist = JSON.parse(cards)
+		Text.setCanvas(canvas)
+		Card.frontimg = <span class="keyword">new</span> Image()
+		Card.frontimg.src = <span class="string">'img/cards.png'</span>
+		Card.backimg = <span class="keyword">new</span> Image()
+		Card.backimg.src = <span class="string">'img/back.png'</span>
+
+		board = <span class="keyword">new</span> Board(canvas, cardlist)
+		$(<span class="string">'canvas'</span>).bind(
+			click: board.mouseClick
+			mousemove: board.mouseMove
+		)
+		board.init()
+	{init: init}
+)</pre></div></div>
+            
+        </li>
+        
+    </ul>
+  </div>
+</body>
+</html>
